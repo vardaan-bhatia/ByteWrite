@@ -1,10 +1,10 @@
 const express = require("express");
-const { route } = require("./userRoutes");
 const router = express.Router();
+console.log("blog route");
 
 router.get("/blogs", (req, res) => {
   try {
-    res.send("All Blogs");
+    res.send(400).json({ message: "All Blogs" });
   } catch (error) {
     console.log(error);
   }
@@ -41,3 +41,4 @@ router.delete("/blogs/:id", (req, res) => {
     console.log(error);
   }
 });
+module.exports = router;
