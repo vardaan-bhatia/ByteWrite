@@ -1,44 +1,24 @@
 const express = require("express");
 const router = express.Router();
-console.log("blog route");
+const Blog = require("../models/blogSchema");
+const {
+  createBlog,
+  getBlogs,
+  getBlog,
+  updateBlog,
+  deleteBlog,
+} = require("../controllers/blogController");
 
-router.get("/blogs", (req, res) => {
-  try {
-    res.send(400).json({ message: "All Blogs" });
-  } catch (error) {
-    console.log(error);
-  }
-});
+let blogs = [];
 
-router.get("/blogs/:id", (req, res) => {
-  try {
-    res.send("Single Blog");
-  } catch (error) {
-    console.log(error);
-  }
-});
+router.get("/blogs", getBlogs);
 
-router.post("/blogs", (req, res) => {
-  try {
-    res.send("Create Blog");
-  } catch (error) {
-    console.log(error);
-  }
-});
+router.get("/blogs/:id", getBlog);
 
-router.patch("/blogs/:id", (req, res) => {
-  try {
-    res.send("Update Blog");
-  } catch (error) {
-    console.log(error);
-  }
-});
+router.post("/blogs", createBlog);
 
-router.delete("/blogs/:id", (req, res) => {
-  try {
-    res.send("Delete Blog");
-  } catch (error) {
-    console.log(error);
-  }
-});
+router.patch("/blogs/:id", updateBlog);
+
+router.delete("/blogs/:id", deleteBlog);
+
 module.exports = router;

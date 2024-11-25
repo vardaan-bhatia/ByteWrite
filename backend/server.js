@@ -8,8 +8,8 @@ const blogRoute = require("./routes/blogRoutes");
 app.use(express.json());
 app.use(cors());
 
-// app.use("/api", userRoute);
-// app.use("/api", blogRoute);
+app.use("/api/v1", userRoute);
+app.use("/api/v1", blogRoute);
 
 app.listen(3000, () => {
   console.log("server started");
