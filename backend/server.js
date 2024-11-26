@@ -12,6 +12,6 @@ app.use("/api/v1", userRoute);
 app.use("/api/v1", blogRoute);
 
 app.listen(3000, () => {
-  console.log("server started");
+  console.log("Server Running on port 3000");
   connectDb();
 });

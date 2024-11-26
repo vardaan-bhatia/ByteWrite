@@ -2,6 +2,8 @@ const User = require("../models/userSchema");
 
 const postUser = async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(req.body);
+
   try {
     if (!name) {
       return res

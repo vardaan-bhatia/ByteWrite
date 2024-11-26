@@ -15,6 +15,11 @@ const blogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

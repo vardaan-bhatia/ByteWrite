@@ -1,9 +1,10 @@
 const Blog = require("../models/blogSchema");
+const User = require("../models/userSchema");
 
 // Create a blog
 const createBlog = async (req, res) => {
   try {
-    const { title, content, draft } = req.body;
+    const { title, content, draft, author } = req.body;
     if (!title) {
       return res.status(400).json({
         status: "fail",
@@ -16,14 +17,29 @@ const createBlog = async (req, res) => {
         message: "Content is required",
       });
     }
+    if (!author) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Author is required",
+      });
+    }
 
+    const findUser = await User.findById(author);
+
+    if (!findUser) {
+      return res.status(404).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
     // Create a new blog
-    const blog = await Blog.create({ title, content, draft });
+    const blog = await Blog.create({ title, content, draft, author });
+    await User.findByIdAndUpdate(author, {
+      $push: { blogs: blog._id },
+    });
     return res.status(200).json({
       status: "success",
-      data: {
-        blog,
-      },
+      data: [blog],
     });
   } catch (error) {
     return res.status(500).json({
@@ -36,12 +52,13 @@ const createBlog = async (req, res) => {
 // Get all blogs
 const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({ draft: false }); // Retrieve all blogs
+    const blogs = await Blog.find({ draft: false }).populate({
+      path: "author",
+      select: "-password",
+    }); // Retrieve all blogs
     return res.status(200).json({
       status: "success",
-      data: {
-        blogs,
-      },
+      data: [blogs],
     });
   } catch (error) {
     return res.status(500).json({
@@ -66,9 +83,7 @@ const getBlog = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      data: {
-        blog,
-      },
+      data: [blog],
     });
   } catch (error) {
     return res.status(500).json({
@@ -100,9 +115,7 @@ const updateBlog = async (req, res) => {
 
     return res.status(200).json({
       status: "success",
-      data: {
-        blog,
-      },
+      data: [blog],
     });
   } catch (error) {
     return res.status(500).json({
