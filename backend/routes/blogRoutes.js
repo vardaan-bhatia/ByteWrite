@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Blog = require("../models/blogSchema");
 const {
   createBlog,
   getBlogs,
