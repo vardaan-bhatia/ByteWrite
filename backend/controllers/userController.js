@@ -1,4 +1,5 @@
 const User = require("../models/userSchema");
+const bcrypt = require("bcrypt");
 
 const postUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -28,10 +29,14 @@ const postUser = async (req, res) => {
         message: "User already exists",
       });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword);
+
     const newUser = await User.create({
       name: name,
       email: email,
-      password: password,
+      password: hashedPassword,
     });
     return res.status(200).json({
       success: true,
