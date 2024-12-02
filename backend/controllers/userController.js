@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 
 const postUser = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(req.body);
 
   try {
     if (!name) {
@@ -42,6 +41,48 @@ const postUser = async (req, res) => {
       success: true,
       message: "User created successfully",
       user: newUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter email",
+      });
+    }
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter password",
+      });
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      user,
     });
   } catch (error) {
     return res.status(500).json({
@@ -119,6 +160,7 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   postUser,
+  loginUser,
   getUser,
   getUserById,
   updateUser,
