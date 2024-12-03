@@ -1,29 +1,17 @@
 const Blog = require("../models/blogSchema");
 const User = require("../models/userSchema");
+const { verifyJwt } = require("../utils/generateToken");
 
 // Create a blog
 const createBlog = async (req, res) => {
   try {
     const { title, content, draft, author } = req.body;
-    if (!title) {
+    if (!title && !content && !author) {
       return res.status(400).json({
         status: "fail",
-        message: "Title is required",
+        message: "Title,Content & Author is required",
       });
     }
-    if (!content) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Content is required",
-      });
-    }
-    if (!author) {
-      return res.status(400).json({
-        status: "fail",
-        message: "Author is required",
-      });
-    }
-
     const findUser = await User.findById(author);
 
     if (!findUser) {
