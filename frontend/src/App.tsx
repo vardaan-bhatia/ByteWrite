@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Auth from "./pages/auth";
 import Home from "./components/Home";
 import CreateBlog from "./pages/createBlog";
-import Dashboard from "./pages/dashboard";
+
 const App = () => {
   return (
     <div className="min-h-screen">
@@ -20,7 +20,6 @@ const App = () => {
             }
           />
           <Route path="/createblog" element={<CreateBlog />} />
-          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
     </div>

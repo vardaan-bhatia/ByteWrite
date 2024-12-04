@@ -46,7 +46,7 @@ const Login: React.FC = () => {
       // Store token and redirect on success
       localStorage.setItem("token", response.data.token);
       setServerError(null); // Clear server error on success
-      navigate("/dashboard");
+      navigate("/createblog");
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         setServerError(error.response?.data?.message || "Login failed");

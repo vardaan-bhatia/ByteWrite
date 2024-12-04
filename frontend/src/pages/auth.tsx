@@ -9,7 +9,7 @@ const Auth: React.FC = () => {
   const token = localStorage.getItem("token");
   useEffect(() => {
     if (token) {
-      navigate("/dashboard");
+      navigate("/createblog");
     }
   }, []);
 
