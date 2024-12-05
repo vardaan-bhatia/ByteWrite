@@ -5,11 +5,14 @@ const { verifyJwt } = require("../utils/generateToken");
 // Create a blog
 const createBlog = async (req, res) => {
   try {
-    const { title, content, draft, author } = req.body;
-    if (!title && !content && !author) {
+    const author = req.user;
+    console.log(author);
+
+    const { title, content, draft } = req.body;
+    if (!title || !content) {
       return res.status(400).json({
         status: "fail",
-        message: "Title,Content & Author is required",
+        message: "Title and Content cannot be empty",
       });
     }
     const findUser = await User.findById(author);
@@ -46,7 +49,7 @@ const getBlogs = async (req, res) => {
     }); // Retrieve all blogs
     return res.status(200).json({
       status: "success",
-      data: [blogs],
+      data: blogs,
     });
   } catch (error) {
     return res.status(500).json({
@@ -127,7 +130,11 @@ const deleteBlog = async (req, res) => {
       });
     }
 
-    return res.status(204).send(); // No content
+    return res.status(200).json({
+      status: "success",
+      message: "Blog deleted successfully",
+    });
+    // No content
   } catch (error) {
     return res.status(500).json({
       status: "error",

@@ -13,13 +13,13 @@ import axios from "axios";
 
 interface Blog {
   title: string;
-  description: string;
+  content: string;
 }
 
 const CreateBlog: React.FC = () => {
   const [blogData, setBlogData] = useState<Blog>({
     title: "",
-    description: "",
+    content: "",
   });
   const [message, setMessage] = useState<string>("");
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ const CreateBlog: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/blogs",
@@ -55,7 +56,7 @@ const CreateBlog: React.FC = () => {
       );
       console.log(response.data);
       setMessage("Blog created successfully!");
-      setBlogData({ title: "", description: "" }); // Reset form
+      setBlogData({ title: "", content: "" }); // Reset form
     } catch (error: unknown) {
       setMessage(
         axios.isAxiosError(error) && error.response?.data?.message
@@ -96,11 +97,11 @@ const CreateBlog: React.FC = () => {
             </div>
             <div>
               <Input
-                type="text"
-                placeholder="Description"
-                name="description"
+                type="textfield"
+                placeholder="Content"
+                name="content"
                 onChange={handleChange}
-                value={blogData.description}
+                value={blogData.content}
                 required
               />
             </div>

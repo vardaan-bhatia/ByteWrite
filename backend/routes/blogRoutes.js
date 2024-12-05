@@ -7,14 +7,14 @@ const {
   updateBlog,
   deleteBlog,
 } = require("../controllers/blogController");
+const { verifyUser } = require("../middleware/auth");
 
 let blogs = [];
+router.post("/blogs", verifyUser, createBlog);
 
 router.get("/blogs", getBlogs);
 
 router.get("/blogs/:id", getBlog);
-
-router.post("/blogs", createBlog);
 
 router.patch("/blogs/:id", updateBlog);
 
