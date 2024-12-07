@@ -21,8 +21,8 @@ router.patch("/blogs/:id", verifyUser, updateBlog);
 
 router.delete("/blogs/:id", verifyUser, deleteBlog);
 
-router.post("/blogs/likes/:id", verifyUser, likeBlog);
+router.post("/blogs/:id/likes", verifyUser, likeBlog);
 
-router.post("/blogs/comments/:id", verifyUser, commentBlog);
+router.post("/blogs/:id/comments", verifyUser, commentBlog);
 
 module.exports = router;
