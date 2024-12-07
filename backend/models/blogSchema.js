@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const commentSchema = require("./commentSchema");
 
 const blogSchema = new mongoose.Schema(
   {
@@ -24,6 +25,12 @@ const blogSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+      },
+    ],
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
       },
     ],
   },

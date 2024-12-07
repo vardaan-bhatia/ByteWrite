@@ -1,6 +1,7 @@
 const Blog = require("../models/blogSchema");
 const User = require("../models/userSchema");
 const { verifyJwt } = require("../utils/generateToken");
+const Comment = require("../models/commentSchema");
 
 // Create a blog
 const createBlog = async (req, res) => {
@@ -51,7 +52,11 @@ const getBlogs = async (req, res) => {
       .populate({
         path: "likes",
         select: "name email",
-      }); // Retrieve all blogs
+      })
+      .populate({
+        path: "comments",
+        select: "content author",
+      });
     return res.status(200).json({
       status: "success",
       data: blogs,
@@ -68,7 +73,19 @@ const getBlogs = async (req, res) => {
 const getBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id)
+      .populate({
+        path: "author",
+        select: "-password",
+      })
+      .populate({
+        path: "likes",
+        select: "name email",
+      })
+      .populate({
+        path: "comments",
+        select: "content author",
+      });
 
     if (!blog) {
       return res.status(404).json({
@@ -189,6 +206,46 @@ const likeBlog = async (req, res) => {
   }
 };
 
+const commentBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+    const author = req.user;
+
+    // Check if blog exists
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Blog not found",
+      });
+    }
+
+    // Create new comment
+    const newComment = await Comment.create({
+      content,
+      author,
+      blog: id,
+    });
+
+    // Add comment reference to blog
+    await Blog.findByIdAndUpdate(id, {
+      $push: { comments: newComment._id },
+    });
+
+    return res.status(201).json({
+      status: "success",
+      message: "Comment added successfully",
+      data: newComment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
@@ -196,4 +253,5 @@ module.exports = {
   updateBlog,
   deleteBlog,
   likeBlog,
+  commentBlog,
 };
