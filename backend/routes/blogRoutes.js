@@ -16,8 +16,8 @@ router.get("/blogs", getBlogs);
 
 router.get("/blogs/:id", getBlog);
 
-router.patch("/blogs/:id", updateBlog);
+router.patch("/blogs/:id", verifyUser, updateBlog);
 
-router.delete("/blogs/:id", deleteBlog);
+router.delete("/blogs/:id", verifyUser, deleteBlog);
 
 module.exports = router;

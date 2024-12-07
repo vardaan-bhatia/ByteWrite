@@ -87,26 +87,27 @@ const getBlog = async (req, res) => {
 // Update a blog
 const updateBlog = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, content, draft } = req.body;
+    const { id } = req.params; // Blog ID
+    const { title, content, draft } = req.body; // Blog updates
+    const creatorId = req.user; // Current user ID
 
-    // Update the blog
-    const blog = await Blog.findByIdAndUpdate(
-      id,
-      { title, content, draft },
-      { new: true, runValidators: true }
+    // Find and update the blog in one step, ensuring the creator matches
+    const updatedBlog = await Blog.findOneAndUpdate(
+      { _id: id, author: creatorId }, // Filter: Match blog ID and author
+      { title, content, draft }, // Update fields
+      { new: true } // Return the updated document
     );
 
-    if (!blog) {
+    if (!updatedBlog) {
       return res.status(404).json({
         status: "fail",
-        message: "Blog not found",
+        message: "Blog not found or you are not authorized to update this blog",
       });
     }
 
     return res.status(200).json({
       status: "success",
-      data: [blog],
+      data: updatedBlog,
     });
   } catch (error) {
     return res.status(500).json({
@@ -120,25 +121,28 @@ const updateBlog = async (req, res) => {
 const deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
-
-    const blog = await Blog.findByIdAndDelete(id);
-
+    console.log(id);
+    const creatorId = req.user; // User ID from the authenticated request (assuming middleware sets it)
+    console.log(creatorId);
+    const blog = await Blog.findOneAndDelete({ _id: id, author: creatorId });
     if (!blog) {
       return res.status(404).json({
         status: "fail",
-        message: "Blog not found",
+        message: "Blog not found or you're not authorized to delete this blog",
       });
     }
-
+    await User.findByIdAndUpdate(creatorId, {
+      $pull: { blogs: id },
+    });
     return res.status(200).json({
       status: "success",
       message: "Blog deleted successfully",
     });
-    // No content
   } catch (error) {
+    console.error("Error deleting blog:", error); // Log the error for debugging
     return res.status(500).json({
       status: "error",
-      message: error.message,
+      message: "Internal server error",
     });
   }
 };
