@@ -43,10 +43,15 @@ const createBlog = async (req, res) => {
 // Get all blogs
 const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({ draft: false }).populate({
-      path: "author",
-      select: "-password",
-    }); // Retrieve all blogs
+    const blogs = await Blog.find({ draft: false })
+      .populate({
+        path: "author",
+        select: "-password",
+      })
+      .populate({
+        path: "likes",
+        select: "name email",
+      }); // Retrieve all blogs
     return res.status(200).json({
       status: "success",
       data: blogs,
@@ -121,9 +126,9 @@ const updateBlog = async (req, res) => {
 const deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
+
     const creatorId = req.user; // User ID from the authenticated request (assuming middleware sets it)
-    console.log(creatorId);
+
     const blog = await Blog.findOneAndDelete({ _id: id, author: creatorId });
     if (!blog) {
       return res.status(404).json({
@@ -139,10 +144,47 @@ const deleteBlog = async (req, res) => {
       message: "Blog deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting blog:", error); // Log the error for debugging
     return res.status(500).json({
       status: "error",
       message: "Internal server error",
+    });
+  }
+};
+
+// Like a blog
+const likeBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const creator = req.user;
+
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(500).json({
+        message: "Blog not found",
+      });
+    }
+    if (!blog.likes.includes(creator)) {
+      await Blog.findByIdAndUpdate(id, {
+        $push: { likes: creator },
+      });
+
+      return res.status(200).json({
+        status: "success",
+        message: "Blog liked successfully",
+      });
+    } else {
+      await Blog.findByIdAndUpdate(id, {
+        $pull: { likes: creator },
+      });
+      return res.status(200).json({
+        status: "success",
+        message: "Blog unliked successfully",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
     });
   }
 };
@@ -153,4 +195,5 @@ module.exports = {
   getBlog,
   updateBlog,
   deleteBlog,
+  likeBlog,
 };

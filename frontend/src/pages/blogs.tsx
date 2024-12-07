@@ -41,18 +41,21 @@ const BlogList: React.FC = () => {
 
   return (
     <div>
-      {loading ? (
-        <p>Loading blogs...</p>
-      ) : (
-        <ul>
-          {blogs.map((blog) => (
-            <li key={blog._id}>
-              <h3>{blog.title}</h3>
-              <p>{blog.content}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      {blogs.length === 0 && <p>No blogs available.</p>}
+      <div>
+        {loading ? (
+          <p>Loading blogs...</p>
+        ) : (
+          <ul>
+            {blogs.map((blog) => (
+              <li key={blog._id}>
+                <h3>{blog.title}</h3>
+                <p>{blog.content}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
