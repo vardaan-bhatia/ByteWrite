@@ -206,7 +206,8 @@ const likeBlog = async (req, res) => {
   }
 };
 
-const commentBlog = async (req, res) => {
+// Create a comment on a blog
+const createComment = async (req, res) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
@@ -246,6 +247,58 @@ const commentBlog = async (req, res) => {
   }
 };
 
+// Delete a comment
+const deleteComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user; // Current authenticated user
+
+    // Find comment and populate both author and blog (with its author)
+    const comment = await Comment.findById(id)
+      .populate("author")
+      .populate({
+        path: "blog",
+        populate: { path: "author" },
+      });
+
+    if (!comment) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Comment not found",
+      });
+    }
+
+    // Check if current user is either comment author or blog author
+    const isCommentAuthor =
+      comment.author._id.toString() === currentUserId.toString();
+    const isBlogAuthor =
+      comment.blog.author._id.toString() === currentUserId.toString();
+
+    if (!isCommentAuthor && !isBlogAuthor) {
+      return res.status(403).json({
+        status: "fail",
+        message: "You are not authorized to delete this comment",
+      });
+    }
+
+    // Delete comment and remove reference from blog
+    await Comment.findByIdAndDelete(id);
+    await Blog.findByIdAndUpdate(comment.blog._id, {
+      $pull: { comments: id },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Comment deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createBlog,
   getBlogs,
@@ -253,5 +306,6 @@ module.exports = {
   updateBlog,
   deleteBlog,
   likeBlog,
-  commentBlog,
+  createComment,
+  deleteComment,
 };

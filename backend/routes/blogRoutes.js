@@ -7,7 +7,8 @@ const {
   updateBlog,
   deleteBlog,
   likeBlog,
-  commentBlog,
+  createComment,
+  deleteComment,
 } = require("../controllers/blogController");
 const { verifyUser } = require("../middleware/auth");
 
@@ -23,6 +24,8 @@ router.delete("/blogs/:id", verifyUser, deleteBlog);
 
 router.post("/blogs/:id/likes", verifyUser, likeBlog);
 
-router.post("/blogs/:id/comments", verifyUser, commentBlog);
+router.post("/blogs/:id/comments", verifyUser, createComment);
+
+router.post("/blogs/:id/deletecomment", verifyUser, deleteComment);
 
 module.exports = router;
