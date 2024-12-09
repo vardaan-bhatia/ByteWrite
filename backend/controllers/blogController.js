@@ -9,18 +9,21 @@ const fs = require("fs");
 const createBlog = async (req, res) => {
   try {
     const author = req.user;
-    const image = req.file;
+    const image = req.file; // This might be undefined if no image is uploaded
     const { title, content, draft } = req.body;
+
     console.log({ title, content, draft, image });
 
+    // Check if title and content are provided
     if (!title || !content) {
       return res.status(400).json({
         status: "fail",
         message: "Title and Content cannot be empty",
       });
     }
-    const findUser = await User.findById(author);
 
+    // Find the user
+    const findUser = await User.findById(author);
     if (!findUser) {
       return res.status(404).json({
         status: "fail",
@@ -28,27 +31,40 @@ const createBlog = async (req, res) => {
       });
     }
 
-    const { public_id, secure_url } = await uploadImage(image.path);
-    fs.unlinkSync(image.path);
+    let imageUrl = null;
+    let imageId = null;
+
+    // If an image is uploaded, process it
+    if (image) {
+      const { public_id, secure_url } = await uploadImage(image.path);
+      fs.unlinkSync(image.path); // Remove the uploaded file from local storage
+      imageUrl = secure_url;
+      imageId = public_id;
+    }
+
     // Create a new blog
     const blog = await Blog.create({
       title,
       content,
-      image: secure_url,
-      imageId: public_id,
+      image: imageUrl, // Will be null if no image is uploaded
+      imageId: imageId, // Will be null if no image is uploaded
       draft,
       author,
     });
+
     console.log(blog);
 
+    // Update the user's blogs
     await User.findByIdAndUpdate(author, {
       $push: { blogs: blog._id },
     });
+
     return res.status(200).json({
       status: "success",
       data: [blog],
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       status: "error",
       message: error.message,
@@ -60,6 +76,7 @@ const createBlog = async (req, res) => {
 const getBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find({ draft: false })
+      .sort({ createdAt: -1 })
       .populate({
         path: "author",
         select: "-password",
