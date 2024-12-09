@@ -4,6 +4,7 @@ const app = express();
 const connectDb = require("./config/dbConnnect");
 const userRoute = require("./routes/userRoutes");
 const blogRoute = require("./routes/blogRoutes");
+const cloudinaryConfig = require("./config/cloudinaryConfig");
 
 app.use(express.json());
 app.use(
@@ -19,4 +20,5 @@ app.use("/api/v1", blogRoute);
 
 app.listen(3000, () => {
   connectDb();
+  cloudinaryConfig();
 });

@@ -2,14 +2,16 @@ const Blog = require("../models/blogSchema");
 const User = require("../models/userSchema");
 const { verifyJwt } = require("../utils/generateToken");
 const Comment = require("../models/commentSchema");
+const uploadImage = require("../utils/uploadImage");
 
 // Create a blog
 const createBlog = async (req, res) => {
   try {
     const author = req.user;
-    console.log(author);
-
+    const image = req.file;
     const { title, content, draft } = req.body;
+    console.log({ title, content, draft, image });
+
     if (!title || !content) {
       return res.status(400).json({
         status: "fail",
@@ -24,8 +26,21 @@ const createBlog = async (req, res) => {
         message: "User not found",
       });
     }
+
+    const imageUpload = await uploadImage(image.path);
+    const imageUrl = imageUpload.secure_url;
+
+    console.log(imageUrl);
     // Create a new blog
-    const blog = await Blog.create({ title, content, draft, author });
+    const blog = await Blog.create({
+      title,
+      content,
+      image: imageUrl,
+      draft,
+      author,
+    });
+    console.log(blog);
+
     await User.findByIdAndUpdate(author, {
       $push: { blogs: blog._id },
     });

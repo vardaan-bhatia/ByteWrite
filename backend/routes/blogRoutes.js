@@ -11,8 +11,9 @@ const {
   deleteComment,
 } = require("../controllers/blogController");
 const { verifyUser } = require("../middleware/auth");
+const upload = require("../utils/multer");
 
-router.post("/blogs", verifyUser, createBlog);
+router.post("/blogs", verifyUser, upload.single("image"), createBlog);
 
 router.get("/blogs", getBlogs);
 
