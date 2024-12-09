@@ -16,6 +16,10 @@ const blogSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    imageId: {
+      type: String,
+      required: true,
+    },
     draft: {
       type: Boolean,
       default: false,
