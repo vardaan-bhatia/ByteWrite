@@ -5,9 +5,17 @@ const uploadImage = async (file) => {
       folder: "blog-app",
     });
     return result;
-    console.log("result");
   } catch (error) {
     return error;
   }
 };
-module.exports = uploadImage;
+
+const destroyImage = async (public_id) => {
+  try {
+    const result = await cloudinary.uploader.destroy(public_id);
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+module.exports = { uploadImage, destroyImage };

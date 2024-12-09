@@ -2,7 +2,7 @@ const Blog = require("../models/blogSchema");
 const User = require("../models/userSchema");
 const { verifyJwt } = require("../utils/generateToken");
 const Comment = require("../models/commentSchema");
-const uploadImage = require("../utils/uploadImage");
+const { uploadImage, destroyImage } = require("../utils/uploadImage");
 const fs = require("fs");
 
 // Create a blog
@@ -28,14 +28,14 @@ const createBlog = async (req, res) => {
       });
     }
 
-    const { asset_id, secure_url } = await uploadImage(image.path);
+    const { public_id, secure_url } = await uploadImage(image.path);
     fs.unlinkSync(image.path);
     // Create a new blog
     const blog = await Blog.create({
       title,
       content,
       image: secure_url,
-      imageId: asset_id,
+      imageId: public_id,
       draft,
       author,
     });
@@ -168,6 +168,7 @@ const deleteBlog = async (req, res) => {
         message: "Blog not found or you're not authorized to delete this blog",
       });
     }
+    await destroyImage(blog.imageId);
     await User.findByIdAndUpdate(creatorId, {
       $pull: { blogs: id },
     });
