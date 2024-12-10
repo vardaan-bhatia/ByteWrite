@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import axios from "axios";
 import { ClipLoader } from "react-spinners"; // Importing the ClipLoader spinner
+import { Eye, EyeOff } from "lucide-react"; // Importing Lucide icons
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const Login: React.FC = () => {
   );
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // State to handle loading
+  const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -85,13 +87,21 @@ const Login: React.FC = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
               )}
             </div>
-            <div>
+            <div className="relative">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)} // Toggle the showPassword state
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}{" "}
+                {/* Toggle icon */}
+              </button>
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}

@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import { Eye, EyeOff } from "lucide-react"; // Import Lucide icons
 
 interface UserInfo {
   name: string;
@@ -33,6 +34,7 @@ const Signup: React.FC = () => {
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Added state for loading
+  const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -149,15 +151,23 @@ const Signup: React.FC = () => {
                 <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
               )}
             </div>
-            <div>
+            <div className="relative">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
                 placeholder="Password"
                 name="password"
                 onChange={handleChange}
                 value={userInfo.password}
                 required
               />
+              <button
+                type="button"
+                className="absolute right-3 top-3 text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)} // Toggle the showPassword state
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}{" "}
+                {/* Toggle icon */}
+              </button>
               {formErrors.password && (
                 <p className="text-red-500 text-sm mt-1">
                   {formErrors.password}
