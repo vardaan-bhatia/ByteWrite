@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import BlogCard from "../components/BlogCard";
-import { ClipLoader } from "react-spinners"; // Importing the ClipLoader spinner
+import { HashLoader } from "react-spinners"; // Importing the ClipLoader spinner
 
 type Blog = {
   _id: string;
@@ -36,8 +36,8 @@ const Home: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center w-full h-full">
-        <ClipLoader color="#4fa94d" loading={loading} size={50} />
+      <div className="flex justify-center items-center w-full ">
+        <HashLoader color="#2563EB" loading={loading} size={50} />
       </div>
     );
   }
