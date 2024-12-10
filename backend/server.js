@@ -9,7 +9,7 @@ const cloudinaryConfig = require("./config/cloudinaryConfig");
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend origin
+    origin: "http://localhost:5174", // Frontend origin
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
@@ -20,5 +20,6 @@ app.use("/api/v1", blogRoute);
 
 app.listen(3000, () => {
   connectDb();
+  console.log("Server is running on port 3000");
   cloudinaryConfig();
 });

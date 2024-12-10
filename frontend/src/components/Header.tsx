@@ -27,7 +27,7 @@ const Header: React.FC = () => {
         {/* Spacer */}
         <div className="flex flex-1 justify-end items-center space-x-4">
           {/* Write Button */}
-          <Link to="/createblog" className="hidden md:flex">
+          <Link to="/createblog" className=" md:flex">
             <Button variant="outline" size="sm">
               <NotebookPen className="mr-2 h-4 w-4" />
               Write

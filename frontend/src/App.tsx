@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import CreateBlog from "./pages/createBlog";
 import AppLayout from "./AppLayout";
 import NotFound from "./components/NotFound";
+import BlogDetail from "./pages/blogDetail";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/createblog" element={<CreateBlog />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
           </Routes>
         </AppLayout>
       </Router>

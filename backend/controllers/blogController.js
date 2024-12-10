@@ -12,8 +12,6 @@ const createBlog = async (req, res) => {
     const image = req.file; // This might be undefined if no image is uploaded
     const { title, content, draft } = req.body;
 
-    console.log({ title, content, draft, image });
-
     // Check if title and content are provided
     if (!title || !content) {
       return res.status(400).json({
@@ -51,8 +49,6 @@ const createBlog = async (req, res) => {
       draft,
       author,
     });
-
-    console.log(blog);
 
     // Update the user's blogs
     await User.findByIdAndUpdate(author, {
