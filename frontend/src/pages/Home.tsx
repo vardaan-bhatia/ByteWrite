@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import BlogCard from "./BlogCard";
+import BlogCard from "../components/BlogCard";
 import { ClipLoader } from "react-spinners"; // Importing the ClipLoader spinner
 
 type Blog = {

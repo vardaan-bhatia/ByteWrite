@@ -1,31 +1,63 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { NotebookPen, LogIn } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { NotebookPen, LogIn, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Header: React.FC = () => {
-  return (
-    <header className="w-full bg-blue-700 text-white py-4 shadow-lg">
-      <div className="max-w-full mx-auto px-6 flex items-center justify-between flex-wrap">
-        {/* App Name */}
-        <Link to="/" className="text-3xl font-bold tracking-wide mb-4 md:mb-0">
-          Byte<span className="text-yellow-300">Write.</span>
-        </Link>
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
-        {/* Navigation */}
-        <nav className="space-x-4 flex flex-col md:flex-row gap-4 md:gap-0">
-          <Link
-            to="/createblog"
-            className="px-3 py-1 text-sm bg-white text-blue-700 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 shadow-sm"
-          >
-            <NotebookPen className="inline-block mr-2" /> Write
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/auth"); // Redirect to the auth page after logout
+  };
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-14 items-center justify-between max-w-7xl px-4">
+        {/* Logo */}
+        <div className="flex items-center">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
+            <span className="font-bold inline-block text-3xl">
+              Byte<span className="text-blue-600">Write.</span>
+            </span>
           </Link>
-          <Link
-            to="/auth"
-            className="px-3 py-1 text-sm bg-white text-blue-700 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 shadow-sm"
-          >
-            <LogIn className="inline-block mr-2" /> Login
+        </div>
+
+        {/* Spacer */}
+        <div className="flex flex-1 justify-end items-center space-x-4">
+          {/* Write Button */}
+          <Link to="/createblog" className="hidden md:flex">
+            <Button variant="outline" size="sm">
+              <NotebookPen className="mr-2 h-4 w-4" />
+              Write
+            </Button>
           </Link>
-        </nav>
+
+          {/* User Authentication Section */}
+          {token ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="flex items-center gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
+          ) : (
+            <Link to="/auth">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <LogIn className="h-4 w-4" />
+                Login
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

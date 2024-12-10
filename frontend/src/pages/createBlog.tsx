@@ -98,7 +98,7 @@ const CreateBlog: React.FC = () => {
       <Card className="max-w-md mx-auto mt-4 shadow-lg mb-8">
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <CardHeader className="text-center">
-            <CardTitle>Create Blog</CardTitle>
+            <CardTitle className="text-3xl">Create Blog</CardTitle>
             {message && (
               <p
                 className={`text-center mt-2 ${
@@ -153,7 +153,11 @@ const CreateBlog: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit" disabled={loading}>
+            <Button
+              className="w-full bg-blue-700  text-lg"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? <ClipLoader size={20} color="white" /> : "Create"}
             </Button>
           </CardFooter>

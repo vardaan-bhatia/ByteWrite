@@ -10,6 +10,7 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 interface UserInfo {
   name: string;
@@ -31,6 +32,7 @@ const Signup: React.FC = () => {
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Added state for loading
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,6 +80,8 @@ const Signup: React.FC = () => {
       return;
     }
 
+    setLoading(true); // Start loading spinner
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/users",
@@ -100,6 +104,8 @@ const Signup: React.FC = () => {
       } else {
         setMessage("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
 
@@ -160,8 +166,12 @@ const Signup: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit">
-              Signup
+            <Button className="w-full bg-blue-700 text-lg" type="submit">
+              {loading ? (
+                <ClipLoader size={24} color={"#fff"} loading={loading} />
+              ) : (
+                "Signup"
+              )}
             </Button>
           </CardFooter>
         </form>

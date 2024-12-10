@@ -11,6 +11,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import axios from "axios";
+import { ClipLoader } from "react-spinners"; // Importing the ClipLoader spinner
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Login: React.FC = () => {
     {}
   );
   const [serverError, setServerError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // State to handle loading
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -35,6 +37,8 @@ const Login: React.FC = () => {
 
     // Validate form fields
     if (!validateForm()) return;
+
+    setLoading(true); // Set loading to true when submitting
 
     try {
       const response = await axios.post(
@@ -53,6 +57,8 @@ const Login: React.FC = () => {
       } else {
         setServerError("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false); // Set loading to false once request is finished
     }
   };
 
@@ -92,8 +98,12 @@ const Login: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter>
-            <Button className="w-full" type="submit">
-              Login
+            <Button className="w-full bg-blue-700 text-lg" type="submit">
+              {loading ? (
+                <ClipLoader color="#fff" loading={loading} size={20} /> // Show spinner when loading
+              ) : (
+                "Login"
+              )}
             </Button>
           </CardFooter>
         </form>

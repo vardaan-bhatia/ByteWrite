@@ -37,7 +37,7 @@ const createBlog = async (req, res) => {
     // If an image is uploaded, process it
     if (image) {
       const { public_id, secure_url } = await uploadImage(image.path);
-      fs.unlinkSync(image.path); // Remove the uploaded file from local storage
+      fs.unlinkSync(image.path); // Remove the uploaded file from codebase
       imageUrl = secure_url;
       imageId = public_id;
     }
